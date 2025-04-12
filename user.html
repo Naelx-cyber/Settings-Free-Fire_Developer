@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Pengguna</title>
+    <style>
+        /* Reset CSS */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            width: 250px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #45a049;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 30px;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        li {
+            background-color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+        }
+
+        .delete-button {
+            background-color: #f44336; /* Merah */
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f; /* Merah lebih gelap */
+        }
+    </style>
+</head>
+<body>
+    <h1>Manajemen Pengguna</h1>
+    <input type="text" id="username" placeholder="Masukkan nama pengguna" />
+    <button onclick="addUser ()">Tambah Pengguna</button>
+
+    <h2>Daftar Pengguna</h2>
+    <ul id="userList"></ul>
+
+    <script>
+        // Fungsi untuk menambahkan pengguna
+        function addUser () {
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value.trim();
+
+            if (username) {
+                // Ambil daftar pengguna dari localStorage
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                
+                // Tambahkan pengguna baru ke dalam daftar
+                users.push(username);
+                
+                // Simpan kembali ke localStorage
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                // Perbarui tampilan daftar pengguna
+                displayUsers();
+                
+                // Kosongkan input
+                usernameInput.value = '';
+            } else {
+                alert('Nama pengguna tidak boleh kosong!');
+            }
+        }
+
+        // Fungsi untuk menampilkan daftar pengguna
+        function displayUsers() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = ''; // Kosongkan daftar sebelum menampilkan yang baru
+
+            // Ambil daftar pengguna dari localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Tampilkan setiap pengguna dalam daftar
+            users.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.textContent = user;
+
+                // Buat tombol hapus
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = () => removeUser (index); // Menghapus pengguna berdasarkan index
+
+                               // Tambahkan tombol hapus ke dalam elemen li
+                li.appendChild(deleteButton);
+                userList.appendChild(li);
+            });
+        }
+
+        // Fungsi untuk menghapus pengguna berdasarkan indeks
+        function removeUser (index) {
+            // Ambil daftar pengguna dari localStorage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Hapus pengguna dari daftar
+            users.splice(index, 1);
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Perbarui tampilan daftar pengguna
+            displayUsers();
+        }
+
+        // Panggil fungsi displayUsers saat halaman dimuat
+        window.onload = displayUsers;
+    </script>
+</body>
+</html>
